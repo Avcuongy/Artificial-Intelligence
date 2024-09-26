@@ -4,7 +4,7 @@ import time
 
 class EightQueens(SearchProblem):
     def __init__(self, initial_state=None):
-        self.goal = tuple(range(8))  # Một giải pháp hợp lệ
+        self.goal = tuple(range(8))
         initial_state = tuple([-1] * 8) if initial_state is None else initial_state
         super().__init__(initial_state)
 

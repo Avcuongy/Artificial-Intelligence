@@ -1,0 +1,17 @@
+8 Puzzle:
+- Initial state: 
+123
+807
+456
+- Goal state:
+123
+804
+765
+-----------------------------------
+8 Queen:
+- In ra vị trí 8 con hậu trên bàn cờ
+sao cho vị trí 8 con hậu không ăn được nhau. 
+- Using Python
+- Library Simpleai
+- Không cần chú thích
+Ouput: vị trí con hậu là "Q", vị trí khác "."

@@ -2,16 +2,17 @@ import os
 from simpleai.search import SearchProblem
 from simpleai.search.local import genetic
 
-# Define the goal state of the puzzle
+# GOAL
 GOAL = ((1, 2, 3),
         (8, 0, 4),
         (7, 6, 5))
+
 
 class EightPuzzleProblem(SearchProblem):
     def actions(self, state):
         rows, cols = len(state), len(state[0])
         empty_row, empty_col = next((r, c) for r in range(rows) for c in range(cols) if state[r][c] == 0)
-        
+
         actions = []
         if empty_row > 0:
             actions.append("UP")
@@ -21,15 +22,15 @@ class EightPuzzleProblem(SearchProblem):
             actions.append("LEFT")
         if empty_col < cols - 1:
             actions.append("RIGHT")
-        
+
         return actions
 
     def result(self, state, action):
         rows, cols = len(state), len(state[0])
         empty_row, empty_col = next((r, c) for r in range(rows) for c in range(cols) if state[r][c] == 0)
-        
+
         new_state = [list(row) for row in state]
-        
+
         if action == "UP":
             new_state[empty_row][empty_col], new_state[empty_row - 1][empty_col] = new_state[empty_row - 1][empty_col], new_state[empty_row][empty_col]
         elif action == "DOWN":
@@ -38,7 +39,7 @@ class EightPuzzleProblem(SearchProblem):
             new_state[empty_row][empty_col], new_state[empty_row][empty_col - 1] = new_state[empty_row][empty_col - 1], new_state[empty_row][empty_col]
         elif action == "RIGHT":
             new_state[empty_row][empty_col], new_state[empty_row][empty_col + 1] = new_state[empty_row][empty_col + 1], new_state[empty_row][empty_col]
-        
+
         return tuple(tuple(row) for row in new_state)
 
     def is_goal(self, state):
@@ -54,7 +55,10 @@ class EightPuzzleProblem(SearchProblem):
                     distance += abs(goal_r - r) + abs(goal_c - c)
         return distance
 
-    def backtracking(self, state, path=[], visited=set(), depth=0, max_depth=20):
+    def backtracking(self, state, path=[], visited=None, depth=0, max_depth=20):
+        if visited is None:
+            visited = set()
+
         if self.is_goal(state):
             return path
 
@@ -71,41 +75,41 @@ class EightPuzzleProblem(SearchProblem):
                     return result
         return None
 
+
 def manual_hill_climbing(problem):
     current_state = problem.initial_state
     current_path = []
-    
+
     while True:
         neighbors = []
         for action in problem.actions(current_state):
             neighbor_state = problem.result(current_state, action)
             neighbors.append((neighbor_state, action))
-        
+
         if not neighbors:
             return None
-        
+
         next_state, action = min(neighbors, key=lambda x: problem.heuristic(x[0]))
-        
+
         if problem.is_goal(next_state):
             return current_path + [action]
-        
+
         if problem.heuristic(next_state) >= problem.heuristic(current_state):
-            return None
-        
+            return current_path
+
         current_state = next_state
         current_path.append(action)
-        
-        # Debugging output
+
         print(f"Current state: {current_state}")
         print(f"Next state: {next_state}")
         print(f"Current path: {current_path}")
 
-# Define the initial state of the puzzle
+
+
 initial_state = ((1, 2, 3),
                  (8, 0, 7),
                  (4, 5, 6))
 
-# Create an instance of the problem
 problem = EightPuzzleProblem(initial_state)
 
 # Hill Climbing search
@@ -154,7 +158,7 @@ if path_bt:
         final_state_bt = problem.result(final_state_bt, action)
     print("Kết quả Backtracking (hành động):", path_bt)
     print("Trạng thái cuối cùng của Backtracking:", final_state_bt)
-    
+
     if final_state_bt == GOAL:
         print("Backtracking solved the puzzle!")
 else:
